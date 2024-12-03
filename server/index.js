@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors"; // Import CORS package
 import {
   createCategory,
   deleteCategory,
@@ -36,6 +37,16 @@ const app = express();
 
 const router = express.Router();
 
+app.use(express.json()); // Parse JSON request bodies
+// CORS configuration
+const corsOptions = {
+  origin: "http://localhost:5173", // Update this with your frontend's URL (if different)
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+// Enable CORS for all routes
+app.use(cors(corsOptions));
 // category
 app.use("/category", authenticate);
 router.post("/category", createCategory);
@@ -69,14 +80,12 @@ router.put("/author/:id", updateAuthor);
 router.delete("/author/:id", deleteAuthor);
 
 // user
-app.use("/auth", authenticate);
-router.post("/auth/register", register);
 router.post("/auth/login", login);
+router.post("/auth/register", register);
 // server
 const PORT = process.env.PORT || 3000;
 
 router.get("/", (req, res) => res.send("Hello World!"));
-app.use(express.json()); // Parse JSON request bodies
 app.use(router); // Use the router for handling requests
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
