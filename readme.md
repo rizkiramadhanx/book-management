@@ -17,6 +17,7 @@ npm run dev
 
 ```bash
 cd server
+npx prisma migrate
 npm install
 node index.js
 ```
