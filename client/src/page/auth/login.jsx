@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import { Alert, Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import axiosBaseUrl from "../../libs/axios";
 
@@ -12,8 +12,6 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(email, password);
-    // Contoh validasi (ganti dengan logika autentikasi yang lebih baik)
     try {
       const response = await axiosBaseUrl.request({
         method: "POST",
@@ -26,8 +24,8 @@ function Login() {
 
       localStorage.setItem("token", response.data.token);
 
-      if (response.status === 200) {
-        navigate("/protected");
+      if (response.status === 200 && localStorage.getItem("token")) {
+        setTimeout(() => navigate("/dashboard/book", { replace: true }), 1000);
       }
     } catch (error) {
       if (error.response) {

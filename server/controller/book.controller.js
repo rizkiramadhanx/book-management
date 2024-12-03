@@ -3,15 +3,15 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const createBook = async (req, res) => {
-  const { title, authorId, categoryId, genreId, description } = req.body;
+  const { title, authorId, categoryId, genreId } = req.body;
+  console.log(title, authorId, categoryId, genreId);
   try {
     const book = await prisma.book.create({
       data: {
         title,
-        description,
-        author: { connect: { id: authorId } },
-        category: { connect: { id: categoryId } },
-        genre: { connect: { id: genreId } },
+        author: { connect: { id: Number(authorId) } },
+        category: { connect: { id: Number(categoryId) } },
+        genre: { connect: { id: Number(genreId) } },
       },
     });
     res.status(201).json({
@@ -25,6 +25,7 @@ export const createBook = async (req, res) => {
       message: "Failed to create book",
       status: 500,
       data: null,
+      error: error,
       meta: { count: 0 },
     });
   }
@@ -92,16 +93,15 @@ export const getBookById = async (req, res) => {
 
 export const updateBook = async (req, res) => {
   const { id } = req.params;
-  const { title, authorId, categoryId, genreId, description } = req.body;
+  const { title, authorId, categoryId, genreId } = req.body;
   try {
     const book = await prisma.book.update({
       where: { id: parseInt(id) },
       data: {
         title,
-        description,
-        author: { connect: { id: authorId } },
-        category: { connect: { id: categoryId } },
-        genre: { connect: { id: genreId } },
+        author: { connect: { id: Number(authorId) } },
+        category: { connect: { id: Number(categoryId) } },
+        genre: { connect: { id: Number(genreId) } },
       },
     });
     res.json({

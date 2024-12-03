@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import {
   Col,
@@ -11,21 +10,21 @@ import {
 } from "react-bootstrap";
 import axiosBaseUrl from "../../../libs/axios";
 
-function ShowAuthor() {
-  const [authors, setAuthors] = useState([]);
+function ShowCategory() {
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [authorToDelete, setAuthorToDelete] = useState(null);
-  const [authorToEdit, setAuthorToEdit] = useState(null);
-  const [authorName, setAuthorName] = useState("");
+  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [categoryToEdit, setCategoryToEdit] = useState(null);
+  const [categoryName, setCategoryName] = useState("");
 
-  const fetchAuthors = async () => {
+  const fetchCategories = async () => {
     try {
-      const response = await axiosBaseUrl.get("/author");
-      setAuthors(response.data.data);
+      const response = await axiosBaseUrl.get("/category");
+      setCategories(response.data.data);
       setLoading(false);
     } catch (error) {
       setError(error.message);
@@ -35,41 +34,44 @@ function ShowAuthor() {
 
   const handleDelete = async () => {
     try {
-      await axiosBaseUrl.delete(`/author/${authorToDelete.id}`);
-      fetchAuthors();
+      await axiosBaseUrl.delete(`/category/${categoryToDelete.id}`);
+      fetchCategories();
       setShowDeleteModal(false);
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      setError("Gagal menghapus author.");
+      setError("Gagal menghapus kategori.");
       setShowDeleteModal(false);
     }
   };
 
-  const handleAddAuthor = async () => {
+  const handleAddCategory = async () => {
     try {
-      await axiosBaseUrl.post("/author", { name: authorName });
-      fetchAuthors();
+      await axiosBaseUrl.post("/category", { name: categoryName });
+      fetchCategories();
       setShowAddModal(false);
-      setAuthorName("");
+      setCategoryName("");
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      setError("Gagal menambahkan author.");
+      setError("Gagal menambahkan kategori.");
     }
   };
 
-  const handleEditAuthor = async () => {
+  const handleEditCategory = async () => {
     try {
-      await axiosBaseUrl.put(`/author/${authorToEdit.id}`, {
-        name: authorName,
+      await axiosBaseUrl.put(`/category/${categoryToEdit.id}`, {
+        name: categoryName,
       });
-      fetchAuthors();
+      fetchCategories();
       setShowEditModal(false);
-      setAuthorName("");
+      setCategoryName("");
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      setError("Gagal mengedit author.");
+      setError("Gagal mengedit kategori.");
     }
   };
 
-  const handleShowDeleteModal = (author) => {
-    setAuthorToDelete(author);
+  const handleShowDeleteModal = (category) => {
+    setCategoryToDelete(category);
     setShowDeleteModal(true);
   };
 
@@ -77,9 +79,9 @@ function ShowAuthor() {
     setShowAddModal(true);
   };
 
-  const handleShowEditModal = (author) => {
-    setAuthorToEdit(author);
-    setAuthorName(author.name);
+  const handleShowEditModal = (category) => {
+    setCategoryToEdit(category);
+    setCategoryName(category.name);
     setShowEditModal(true);
   };
 
@@ -87,59 +89,59 @@ function ShowAuthor() {
     setShowDeleteModal(false);
     setShowAddModal(false);
     setShowEditModal(false);
-    setAuthorName("");
-    setAuthorToDelete(null);
-    setAuthorToEdit(null);
+    setCategoryName("");
+    setCategoryToDelete(null);
+    setCategoryToEdit(null);
   };
 
   useEffect(() => {
-    fetchAuthors();
+    fetchCategories();
   }, []);
 
   return (
     <Container style={{ marginTop: "30px" }}>
       <Row>
         <Col>
-          <h2>Daftar Author</h2>
+          <h2>Daftar Kategori</h2>
           <Button
             variant="primary"
             style={{ marginBottom: "20px" }}
             onClick={handleShowAddModal}
           >
-            Tambah Author
+            Tambah Kategori
           </Button>
 
           {loading && <p>Loading...</p>}
           {error && <p style={{ color: "red" }}>{error}</p>}
-          {!loading && !error && authors.length === 0 && (
-            <p>Tidak ada author yang ditemukan.</p>
+          {!loading && !error && categories.length === 0 && (
+            <p>Tidak ada kategori yang ditemukan.</p>
           )}
 
           <Table striped bordered hover>
             <thead>
               <tr>
                 <th>No</th>
-                <th>Nama Author</th>
+                <th>Nama Kategori</th>
                 <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
-              {authors.length > 0 &&
-                authors.map((author, index) => (
-                  <tr key={author.id}>
+              {categories.length > 0 &&
+                categories.map((category, index) => (
+                  <tr key={category.id}>
                     <td>{index + 1}</td>
-                    <td>{author.name}</td>
+                    <td>{category.name}</td>
                     <td>
                       <Button
                         variant="warning"
                         style={{ marginRight: "5px" }}
-                        onClick={() => handleShowEditModal(author)}
+                        onClick={() => handleShowEditModal(category)}
                       >
                         Edit
                       </Button>
                       <Button
                         variant="danger"
-                        onClick={() => handleShowDeleteModal(author)}
+                        onClick={() => handleShowDeleteModal(category)}
                       >
                         Hapus
                       </Button>
@@ -152,18 +154,18 @@ function ShowAuthor() {
       </Row>
 
       <Modal
+        centered
         show={showDeleteModal}
         onHide={handleCloseModal}
-        centered
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Konfirmasi Hapus Author</Modal.Title>
+          <Modal.Title>Konfirmasi Hapus Kategori</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Apakah Anda yakin ingin menghapus author{" "}
-          <strong>{authorToDelete?.name}</strong>?
+          Apakah Anda yakin ingin menghapus kategori{" "}
+          <strong>{categoryToDelete?.name}</strong>?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
@@ -176,24 +178,24 @@ function ShowAuthor() {
       </Modal>
 
       <Modal
+        centered
         show={showAddModal}
         onHide={handleCloseModal}
-        centered
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Tambah Author</Modal.Title>
+          <Modal.Title>Tambah Kategori</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group controlId="authorName">
-              <Form.Label>Nama Author</Form.Label>
+            <Form.Group controlId="categoryName">
+              <Form.Label>Nama Kategori</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Masukkan nama author"
-                value={authorName}
-                onChange={(e) => setAuthorName(e.target.value)}
+                placeholder="Masukkan nama kategori"
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
               />
             </Form.Group>
           </Form>
@@ -202,31 +204,31 @@ function ShowAuthor() {
           <Button variant="secondary" onClick={handleCloseModal}>
             Batal
           </Button>
-          <Button variant="primary" onClick={handleAddAuthor}>
+          <Button variant="primary" onClick={handleAddCategory}>
             Tambah
           </Button>
         </Modal.Footer>
       </Modal>
 
       <Modal
-        centered
         show={showEditModal}
         onHide={handleCloseModal}
+        centered
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Edit Author</Modal.Title>
+          <Modal.Title>Edit Kategori</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group controlId="authorName">
-              <Form.Label>Nama Author</Form.Label>
+            <Form.Group controlId="categoryName">
+              <Form.Label>Nama Kategori</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Masukkan nama author"
-                value={authorName}
-                onChange={(e) => setAuthorName(e.target.value)}
+                placeholder="Masukkan nama kategori"
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
               />
             </Form.Group>
           </Form>
@@ -235,7 +237,7 @@ function ShowAuthor() {
           <Button variant="secondary" onClick={handleCloseModal}>
             Batal
           </Button>
-          <Button variant="primary" onClick={handleEditAuthor}>
+          <Button variant="primary" onClick={handleEditCategory}>
             Simpan Perubahan
           </Button>
         </Modal.Footer>
@@ -244,4 +246,4 @@ function ShowAuthor() {
   );
 }
 
-export default ShowAuthor;
+export default ShowCategory;
