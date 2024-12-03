@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql" // Change this to match your database provider (e.g., mysql, sqlite)
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  username String @unique
+  password String
+  books    Book[] // Relation: A user can have many books
+}
+
+model Book {
+  id         Int      @id @default(autoincrement())
+  title      String
+  categoryId Int
+  authorId   Int
+  genreId    Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  author     Author   @relation(fields: [authorId], references: [id])
+  genre      Genre    @relation(fields: [genreId], references: [id])
+  User       User?    @relation(fields: [userId], references: [id])
+  userId     Int?
+}
+
+model Author {
+  id    Int    @id @default(autoincrement())
+  name  String
+  books Book[] // Relation: An author can write many books
+}
+
+model Genre {
+  id    Int    @id @default(autoincrement())
+  name  String
+  books Book[] // Relation: A genre can include many books
+}
+
+model Category {
+  id    Int    @id @default(autoincrement())
+  name  String
+  books Book[] // Relation: A category can include many books
+}
